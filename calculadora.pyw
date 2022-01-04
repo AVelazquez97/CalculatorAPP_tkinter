@@ -87,7 +87,7 @@ label2.place(relx=0.1, rely=0.6, relheight=0.1, relwidth=0.8)
 
 
 # ------------ text box configs ------------
-txt1 = ttk.Entry(frameSup, font=timesBoldIt, validate="key", validatecommand=(main_window.register(validate_entry), "%S"))
+txt1 = ttk.Entry(frameSup, font=timesBoldIt)
 txt2 = ttk.Entry(frameLeftInf, font=timesBoldIt, validate="key", validatecommand=(main_window.register(validate_entry), "%S"))
 txt3 = ttk.Entry(frameLeftInf, font=timesBoldIt, validate="key", validatecommand=(main_window.register(validate_entry), "%S"))
 
