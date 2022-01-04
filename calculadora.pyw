@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-from tkinter import Frame, Scale, Tk
+from tkinter import Frame, Tk
 from tkinter import ttk
 from tkinter.constants import BOTH, LEFT, RIGHT, TOP
 
-#Recibe dos números mediante 2 cajas de texto y devuelve el resultado en otra
+#Recibe dos números mediante 2 cajas de texto y devuelve la suma como resultado en otra caja
 def suma():
     n1 = float(txt2.get())
     n2 = float(txt3.get())
@@ -14,7 +14,7 @@ def suma():
     txt2.delete(0, 'end')
     txt3.delete(0, 'end')
 
-#Recibe dos números e imprime en pantalla el resultado de restarle el 2do al 1ero
+#Recibe dos números mediante 2 cajas de texto y devuelve el resultado de la resta en otra caja
 def resta():
     n1 = float(txt2.get())
     n2 = float(txt3.get())
@@ -24,7 +24,7 @@ def resta():
     txt2.delete(0, 'end')
     txt3.delete(0, 'end')
 
-#Recibe dos números e imprime en pantalla el resultado de multiplicarlos entre sí
+#Recibe dos números mediante 2 cajas de texto y devuelve el resultado de la multiplicación en otra caja
 def multiplicacion():
     n1 = float(txt2.get())
     n2 = float(txt3.get())
@@ -34,7 +34,7 @@ def multiplicacion():
     txt2.delete(0, 'end')
     txt3.delete(0, 'end')
 
-#Recibe dos números e imprime en pantalla el resultado de dividir el 1ero entre el 2
+#Recibe dos números mediante 2 cajas de texto y devuelve el resultado de la división en otra caja
 def division():
     n1 = float(txt2.get())
     n2 = float(txt3.get())
