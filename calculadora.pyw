@@ -1,115 +1,142 @@
 #!/usr/bin/python3
 
-from tkinter import Frame, Tk
+import tkinter as tk
 from tkinter import ttk
-from tkinter.constants import BOTH, LEFT, RIGHT, TOP
+from tkinter.constants import BOTH, LEFT, RIGHT
+from functools import partial
 
-#Recibe dos números mediante 2 cajas de texto y devuelve la suma como resultado en otra caja
-def suma():
-    n1 = float(txt2.get())
-    n2 = float(txt3.get())
-    r = n1 + n2
-    txt1.delete(0, 'end')
-    txt1.insert(0,r)
-    txt2.delete(0, 'end')
-    txt3.delete(0, 'end')
+class Calculator():
+    def __init__(self):
+        self.results_length = 0
+        self.entry_font = ("Book Antiqua", "25", "normal")
 
-#Recibe dos números mediante 2 cajas de texto y devuelve el resultado de la resta en otra caja
-def resta():
-    n1 = float(txt2.get())
-    n2 = float(txt3.get())
-    r = n1 - n2
-    txt1.delete(0, 'end')
-    txt1.insert(0,r)
-    txt2.delete(0, 'end')
-    txt3.delete(0, 'end')
+        # -------- main_window configs -----------
+        self.main_window = tk.Tk()
+        self.main_window.title("Calculator")
+        self.main_window.iconbitmap('calculator-bw.ico')
+        self.main_window.geometry("400x350")
+        # -------- main_window configs -----------
 
-#Recibe dos números mediante 2 cajas de texto y devuelve el resultado de la multiplicación en otra caja
-def multiplicacion():
-    n1 = float(txt2.get())
-    n2 = float(txt3.get())
-    r = n1 * n2
-    txt1.delete(0, 'end')
-    txt1.insert(0,r)
-    txt2.delete(0, 'end')
-    txt3.delete(0, 'end')
+        # -------- styles --------
+        self.ac_button_style = ttk.Style()
+        self.ac_button_style.configure("AC.TButton", font= ("Comic sens MC","12","bold"),  
+	                                   relief = "raised", background="#DF9889")
 
-#Recibe dos números mediante 2 cajas de texto y devuelve el resultado de la división en otra caja
-def division():
-    n1 = float(txt2.get())
-    n2 = float(txt3.get())
-    r = n1 / n2
-    txt1.delete(0, 'end')
-    txt1.insert(0,r)
-    txt2.delete(0, 'end')
-    txt3.delete(0, 'end')
+        self.frm_style = ttk.Style()
+        self.frm_style.configure("Frames.TFrame", background="Grey", relief = 'sunken')
 
-#Limita el ingreso a únicamente números
-def validate_entry(text):
-    return text.isdecimal()
+        self.frm_left_inf_style = ttk.Style()
+        self.frm_left_inf_style.configure("FrameLeftInf.TButton", background="Orange")
 
-#Variable global que almacena una fuente
-timesBoldIt = ("Times", "20", "bold italic")
+        self.btn_style_num = ttk.Style()
+        self.btn_style_num.configure("Numbers.TButton", font=("Book Antiqua", "14", "normal"), background="Orange")
 
+        self.btn_style_op = ttk.Style()
+        self.btn_style_op.configure("Operators.TButton", font=("Book Antiqua", "18", "normal"), foreground="Black",
+                                     background="Grey")
+        # -------- end styles --------
 
-# -------- main_window configs -----------
-main_window = Tk()
-main_window.title("Calculadora")
-main_window.iconbitmap('calculator-bw.ico')
-main_window.geometry("550x350")
-# -------- main_window configs -----------
+        # ------------- frames configs -------------
+        self.frame_sup = ttk.Frame(self.main_window, style="Frames.TFrame")
+        self.frame_inf = ttk.Frame(self.main_window, style="Frames.TFrame")
+        self.frame_right_inf = ttk.Frame(self.frame_inf, style="Frames.TFrame")
+        self.frame_left_inf = ttk.Frame(self.frame_inf, style="FrameLeftInf.TButton")
 
+        # frames position
+        self.frame_sup.place(relx=0, rely=0, relwidth=1, relheight=0.2)
+        self.frame_inf.place(relx=0, rely=0.2, relwidth=1, relheight=0.8)
+        self.frame_left_inf.pack(expand=True, fill=BOTH, side=LEFT)
+        self.frame_right_inf.pack(expand=True, fill=BOTH, side=RIGHT)
+        # ------------- frames configs -------------
+       
+        # ------------ result box configs ------------
+        self.results_box = ttk.Entry(self.frame_sup, font=self.entry_font)
+        self.results_box.place(relx=0, rely=0, relwidth=0.8, relheight=1)
+        # ------------ end result box configs ------------
 
-# ------------- frames configs -------------
-# frames creation
-frameSup = Frame(main_window, highlightbackground="grey", highlightthickness=1)
-frameInf = Frame(main_window)
-frameLeftInf = Frame(frameInf, bg="Orange", highlightbackground="grey", highlightthickness=1)
-frameRightInf = Frame(frameInf, highlightbackground="grey", highlightthickness=1)
+        # ------------ button clean entry ------------
+        self.ac_button = ttk.Button(self.frame_sup, text= "AC", style="AC.TButton", command=lambda: self.erase_all())
+        self.ac_button.place(relx=0.8, rely=0, relwidth=0.2, relheight=1)
+        #------------ end button clean entry ------------
 
-# frames position
-frameSup.pack(expand=True, fill=BOTH, side=TOP)
-frameInf.pack(expand=True, fill=BOTH, side=TOP)
-frameLeftInf.pack(expand=True, fill=BOTH, side=LEFT)
-frameRightInf.pack(expand=True, fill=BOTH, side=RIGHT)
-# ------------- frames configs -------------
+        # -------- number buttons config --------
+        self.rows = [["1", "2", "3"],
+                     ["4", "5", "6"],
+                     ["7", "8", "9"],
+                     ["π", "0", "."]]
 
+        # -------- creation and position --------
+        j=0
+        for row in self.rows:
+            i=0
+            for option in row:
+                self.btn = ttk.Button(self.frame_left_inf, text=option, style="Numbers.TButton", 
+                                      command=partial(self.insert_to_box, option))
+                self.btn.place(relx=i, rely=j, relwidth=0.34, relheight=0.25)
+                i+=0.33
+            j+=0.25
 
-# ------------- labels configs -------------
-# labels creation
-label1 = ttk.Label(frameLeftInf, text="Ingrese el primer valor: ", font=("arial", "10", "bold"))
-label2 = ttk.Label(frameLeftInf, text="Ingrese el segundo valor: ", font=("arial", "10", "bold"))
+        # -------- end number buttons config --------
 
-# labels position
-label1.place(relx=0.1, rely=0.1, relheight=0.1, relwidth=0.8)
-label2.place(relx=0.1, rely=0.6, relheight=0.1, relwidth=0.8)
-# ------------- labels configs -------------
+        # ------------- operator buttons config -------------
+        self.operators = [["*", "/"],
+                          ["+", "-"],
+                          ["DEL", "="]]
 
+        # -------- creation and position --------
+        j=0
+        for row in self.operators:
+            i=0
+            for option in row:
+                if option == "DEL":
+                    self.btn = ttk.Button(self.frame_right_inf, text=option, style="Operators.TButton", 
+                                      command=lambda: self.erase())
+                elif option == "=":
+                    self.btn = ttk.Button(self.frame_right_inf, text=option, style="Operators.TButton", 
+                                      command=lambda: self.operation())
+                else:                   
+                    self.btn = ttk.Button(self.frame_right_inf, text=option, style="Operators.TButton", 
+                                          command=partial(self.insert_to_box, option))
+                self.btn.place(relx=i, rely=j, relwidth=0.50, relheight=0.34)
+                i+=0.50
+            j+=0.33
+        
+        # ------------- end operator buttons configs -------------
 
-# ------------ text box configs ------------
-txt1 = ttk.Entry(frameSup, font=timesBoldIt)
-txt2 = ttk.Entry(frameLeftInf, font=timesBoldIt, validate="key", validatecommand=(main_window.register(validate_entry), "%S"))
-txt3 = ttk.Entry(frameLeftInf, font=timesBoldIt, validate="key", validatecommand=(main_window.register(validate_entry), "%S"))
+        self.main_window.mainloop()
+    
+    def insert_to_box(self, data):
+        if data == "π":
+            data = "3.1416"
+            self.results_length += 6
+        else:
+            self.results_length += 1
+        
+        self.results_box.insert(self.results_length, data)
 
-txt1.place(relx=0, rely=0, relheight=1, relwidth=1)
-txt2.place(relx=0.1, rely=0.2, relheight=0.2, relwidth=0.8)
-txt3.place(relx=0.1, rely=0.7, relheight=0.2, relwidth=0.8)
-# ------------ text box configs ------------
+    def erase(self):
+        if self.results_length >= 0:
+            self.results_box.delete(self.results_length, last=None)
+            self.results_length-=1
+      
+    def operation(self):
+        ecuacion = self.results_box.get()
+        if self.results_length !=0:		
+            try:
+                result = str(eval(ecuacion))
+                self.results_length = len(result) 
+            except:
+                result = 'ERROR'
 
+            self.results_box.delete(0,'end')
+            self.results_box.insert(0,result)
 
-# ------------- buttons configs -------------
-# buttons creation
-btnSum = ttk.Button(frameRightInf, text="+", command=suma)
-btnRes = ttk.Button(frameRightInf, text="-", command=resta)
-btnMul = ttk.Button(frameRightInf, text="*", command=multiplicacion)
-btnDiv = ttk.Button(frameRightInf, text="/", command=division)
+    def erase_all(self):
+        self.results_box.delete(0, 'end')
+        self.results_length = 0	
 
-# buttons position
-btnSum.place(relx=0, rely=0, relwidth=0.5, relheight=0.5)
-btnRes.place(relx=0.5, rely=0, relwidth=0.5, relheight=0.5)
-btnMul.place(relx=0, rely=0.5, relwidth=0.5, relheight=0.5)
-btnDiv.place(relx=0.5, rely=0.5, relwidth=0.5, relheight=0.5)
-# ------------- buttons configs -------------
-
-main_window.mainloop() #end program
-
+def main():
+    calculator_app = Calculator()
+    
+if __name__ == '__main__':
+    main()
