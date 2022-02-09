@@ -1,5 +1,17 @@
-# Calculadora
-Simple calculadora con sus cuatro funciones básicas (Suma, Resta, Multiplicación, División) que en primera instancia era ejecutada por consola.
+# Graphic Calculator
 
-El principal objetivo de este proyecto es aprender de manera autodidacta a crear una aplicación de escritorio comunmente llamada GUI. Para ello se usará la librería
-tkinter de python.
+This is a very simple calculator that includes its four basic functions: 
+-Addition
+-Subtraction
+-Multiplication
+-Division
+
+It was created using the next libraries/modules:
+-tkinter
+-os
+-sys
+-tkinter/ttk
+-functools/partial
+
+The main goal of this project was create my first GUI applying OOP concepts learned in a self-taught way.
+
