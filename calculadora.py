@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-
 import os, sys
 import tkinter as tk
 from tkinter import ttk
@@ -16,6 +15,9 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
+
+def validate():
+    return  
 
 class Calculator():
     def __init__(self):
@@ -92,10 +94,10 @@ class Calculator():
         # -------- end number buttons config --------
 
         # ------------- operator buttons config -------------
-        self.operators = [["*", "/"],
+        self.operators = [["√", "^"],
+                          ["*", "/"],
                           ["+", "-"],
                           ["DEL", "="]]
-
         # -------- creation and position --------
         j=0
         for row in self.operators:
@@ -110,9 +112,9 @@ class Calculator():
                 else:                   
                     self.btn = ttk.Button(self.frame_right_inf, text=option, style="Operators.TButton", 
                                           command=partial(self.insert_to_box, option))
-                self.btn.place(relx=i, rely=j, relwidth=0.50, relheight=0.34)
+                self.btn.place(relx=i, rely=j, relwidth=0.50, relheight=0.25)
                 i+=0.50
-            j+=0.33
+            j+=0.25
         
         # ------------- end operator buttons configs -------------
 
@@ -122,6 +124,8 @@ class Calculator():
         if data == "π":
             data = "3.1416"
             self.results_length += 6
+        elif data == "√":
+            data = "3.1416"
         else:
             self.results_length += 1
         
